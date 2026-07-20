@@ -1,0 +1,66 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos-latest
+            target: aarch64-apple-darwin
+            label: macOS-ARM64
+          - platform: macos-latest
+            target: x86_64-apple-darwin
+            label: macOS-x64
+          - platform: windows-latest
+            target: x86_64-pc-windows-msvc
+            label: Windows-x64
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Tauri app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          target: ${{ matrix.target }}
+          tagName: ${{ github.ref_name }}
+          releaseName: HearMD ${{ github.ref_name }}
+          releaseBody: |
+            ## HearMD ${{ github.ref_name }}
+            
+            轻量优雅的 Markdown 编辑器
+            
+            ### 下载说明
+            - **macOS ARM64**: 适用于 Apple Silicon (M1/M2/M3/M4) Mac
+            - **macOS x64**: 适用于 Intel Mac
+            - **Windows x64**: 适用于 64 位 Windows
+          releaseDraft: true
+          prerelease: false
