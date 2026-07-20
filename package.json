@@ -1,0 +1,44 @@
+{
+  "name": "hearmd",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@milkdown/kit": "^7.21.3",
+    "@milkdown/plugin-history": "^7.21.3",
+    "@milkdown/plugin-math": "^7.5.9",
+    "@milkdown/plugin-slash": "^7.21.3",
+    "@milkdown/plugin-tooltip": "^7.21.3",
+    "@milkdown/preset-commonmark": "^7.21.3",
+    "@milkdown/preset-gfm": "^7.21.3",
+    "@milkdown/theme-nord": "^7.21.3",
+    "@tauri-apps/api": "^2.11.1",
+    "@tauri-apps/plugin-dialog": "^2.7.1",
+    "@tauri-apps/plugin-fs": "^2.5.1",
+    "esbuild": "^0.28.1",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "rehype-katex": "^7.0.1",
+    "remark-footnotes": "^4.0.1",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.2",
+    "@tauri-apps/cli": "^2.11.4",
+    "@types/node": "^24.13.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "oxlint": "^1.71.0",
+    "postcss": "^8.5.18",
+    "tailwindcss": "^4.3.2",
+    "typescript": "~6.0.2",
+    "vite": "^8.1.1"
+  }
+}

@@ -1,0 +1,49 @@
+# Welcome to HearMD
+
+A lightweight, elegant Markdown editor with native glass morphism.
+
+# sdfasf
+
+### sdjfhklsahdf
+
+\
+
+
+## Features
+
+* **WYSIWYG** editing — see your markdown rendered in real-time
+
+* Beautiful **transparent** glass effect on macOS
+
+* **Multiple themes** — Light, Dark, Midnight
+
+* Support for **GFM** tables, task lists, and strikethrough
+
+## Code Block
+
+```javascript
+const greeting = "Hello, HearMD!";
+console.log(greeting);
+```
+
+## Task List
+
+* [x] Create project structure
+
+* [x] Set up Milkdown editor
+
+* [ ] Add more themes
+
+* [ ] Implement file tree
+
+## Table
+
+| Feature   | Status | Priority |
+| --------- | ------ | -------- |
+| Editor    | Done   | P0       |
+| Themes    | Done   | P0       |
+| File Tree | WIP    | P1       |
+
+***
+
+> Start writing something beautiful.
