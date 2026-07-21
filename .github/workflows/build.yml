@@ -12,22 +12,20 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: macos-latest
-            args: '--target aarch64-apple-darwin'
-            rust_target: 'aarch64-apple-darwin'
+          - os: macos-latest
+            target: aarch64-apple-darwin
             label: macOS-ARM64
-          - platform: macos-latest
-            args: '--target x86_64-apple-darwin'
-            rust_target: 'x86_64-apple-darwin'
+          - os: macos-latest
+            target: x86_64-apple-darwin
             label: macOS-x64
-          - platform: windows-latest
-            args: ''
-            rust_target: ''
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
             label: Windows-x64
 
-    runs-on: ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -35,35 +33,38 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Install Rust stable
+      - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.rust_target }}
+          targets: ${{ matrix.target }}
 
-      - name: Rust cache
+      - name: Cache Rust
         uses: swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
 
-      - name: Install frontend dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: Build Tauri app
+      - name: Build frontend
+        run: npm run build
+
+      - name: Build Tauri
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tagName: ${{ github.ref_name }}
-          releaseName: HearMD ${{ github.ref_name }}
+          tagName: v__VERSION__
+          releaseName: HearMD v__VERSION__
           releaseBody: |
-            ## HearMD ${{ github.ref_name }}
+            ## HearMD v__VERSION__
             
             轻量优雅的 Markdown 编辑器
             
             ### 下载说明
             - **macOS ARM64**: 适用于 Apple Silicon (M1/M2/M3/M4) Mac
-            - **macOS x64**: 适用于 Intel Mac
+            - **macOS x64**: 适用于 Intel Mac  
             - **Windows x64**: 适用于 64 位 Windows
           releaseDraft: true
           prerelease: false
-          args: ${{ matrix.args }}
+          tauriScript: npx tauri
