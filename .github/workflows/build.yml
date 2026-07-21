@@ -13,13 +13,13 @@ jobs:
       matrix:
         include:
           - platform: macos-latest
-            target: aarch64-apple-darwin
+            args: '--target aarch64-apple-darwin'
             label: macOS-ARM64
           - platform: macos-latest
-            target: x86_64-apple-darwin
+            args: '--target x86_64-apple-darwin'
             label: macOS-x64
           - platform: windows-latest
-            target: x86_64-pc-windows-msvc
+            args: '--target x86_64-pc-windows-msvc'
             label: Windows-x64
 
     runs-on: ${{ matrix.platform }}
@@ -29,20 +29,26 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
 
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.target }}
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
 
       - name: Rust cache
         uses: swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
 
-      - name: Install dependencies
+      - name: Install dependencies (ubuntu only)
+        if: matrix.platform == 'ubuntu-latest'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: Install frontend dependencies
         run: npm ci
 
       - name: Build Tauri app
@@ -50,7 +56,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          target: ${{ matrix.target }}
           tagName: ${{ github.ref_name }}
           releaseName: HearMD ${{ github.ref_name }}
           releaseBody: |
@@ -64,3 +69,4 @@ jobs:
             - **Windows x64**: 适用于 64 位 Windows
           releaseDraft: true
           prerelease: false
+          args: ${{ matrix.args }}
