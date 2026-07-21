@@ -99,7 +99,6 @@ const translations = {
     "settings.on": "开启",
     "settings.off": "关闭",
     "status.words": "字",
-    "status.words": "字",
     "status.chars": "字符",
     "theme.light": "浅色",
     "theme.dark": "深色",
